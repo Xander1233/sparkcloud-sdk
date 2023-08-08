@@ -1,0 +1,45 @@
+{
+  "name": "sparkcloud-sdk",
+  "version": "1.0.0",
+  "description": "SparkCloud SDK to create and deploy your cloud functions.",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && tsc",
+    "tests:all": "jest --roots tests/unit"
+  },
+  "keywords": [
+    "sparkcloud",
+    "cloud functions",
+    "functions",
+    "cloud"
+  ],
+  "author": "David Neidhart <david.neidhart@gmx.net>",
+  "license": "MIT",
+  "dependencies": {
+    "@ayanaware/logger": "^2.3.1",
+    "@fastify/cors": "^8.3.0",
+    "@fastify/view": "^8.0.0",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "fastify": "^4.21.0",
+    "require-all": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.3",
+    "@types/node": "^20.4.8",
+    "@types/require-all": "^3.0.3",
+    "jest": "^29.6.2",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.1.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xander1233/sparkcloud-sdk.git"
+  },
+  "homepage": "https://github.com/Xander1233/sparkcloud-sdk",
+  "bugs": {
+    "url": "https://github.com/Xander1233/sparkcloud-sdk/issues"
+  }
+}
