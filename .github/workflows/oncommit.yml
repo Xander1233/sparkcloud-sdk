@@ -13,7 +13,7 @@ on:
 jobs:
   tests:
     name: Test
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
@@ -35,7 +35,7 @@ jobs:
 
   dry-build:
     name: Dry build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [ tests ]
     strategy:
       fail-fast: false
@@ -56,7 +56,7 @@ jobs:
   dry-publish:
     name: Dry Publish
     needs: [ dry-build, tests ]
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
