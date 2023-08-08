@@ -86,8 +86,8 @@ export function runWith(runtimeOptions: RuntimeOptions) {
 
 export class FunctionBuilder {
 
-	private regions: Regions = [ "eu-central" ];
-	private runtimeOptions: RuntimeOptions = {
+	private _regions: Regions = [ "eu-central" ];
+	private _runtimeOptions: RuntimeOptions = {
 		memory: "128m",
 		timeoutSeconds: 15,
 		cpu: 1,
@@ -96,24 +96,24 @@ export class FunctionBuilder {
 
 	constructor(options: FunctionBuilderOptions) {
 		if (options.regions) {
-			this.regions = options.regions;
+			this._regions = options.regions;
 		}
 
 		if (options.runWith) {
-			this.runtimeOptions = options.runWith;
+			this._runtimeOptions = options.runWith;
 		}
 	}
 
 	public region(...regions: Regions) {
 		if (assertRegionOptions(regions)) {
-			this.regions = regions;
+			this._regions = regions;
 			return this;
 		}
 	}
 
 	public runWith(runtimeOptions: RuntimeOptions) {
 		if (assertRunWithOptions(runtimeOptions)) {
-			this.runtimeOptions = runtimeOptions;
+			this._runtimeOptions = runtimeOptions;
 			return this;
 		}
 	}
@@ -132,5 +132,13 @@ export class FunctionBuilder {
 				return scheduleWithOptions(cron, { regions: this.regions, runWith: this.runtimeOptions });
 			}
 		}
+	}
+
+	public get regions() {
+		return this._regions;
+	}
+
+	public get runtimeOptions() {
+		return this._runtimeOptions;
 	}
 }

@@ -12,14 +12,14 @@ export function scheduleWithOptions(cron: string, options: { regions: Regions, r
 
 class ScheduleBuilder {
 	
-	private regions: Regions = [ "eu-central" ];
-	private runtimeOptions: RuntimeOptions = {
+	public regions: Regions = [ "eu-central" ];
+	public runtimeOptions: RuntimeOptions = {
 		memory: "128m",
 		timeoutSeconds: 15,
 		cpu: 1,
 		minimumInstances: 0
 	};
-	private cron: string;
+	public cron: string;
 	
 	constructor(trigger: string, options: { regions: Regions, runWith: RuntimeOptions }) {
 		this.cron = trigger;
