@@ -1,0 +1,93 @@
+name: Node.js CI
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  tests:
+    name: Test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Uses Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Clean installation of project
+        run: npm ci
+      - name: Run unit tests
+        run: npm run tests:all
+
+  dry-build:
+    name: Dry build
+    runs-on: ubuntu-latest
+    needs: [ tests ]
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Clean installation of project
+        run: npm ci
+      - name: Build
+        run: npm run build
+
+  build:
+    name: Build
+    needs: [tests, dry-build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node enviroment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Clean installation
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: BuildArtifact
+          if-no-files-found: error
+          path: |
+            ./dist
+            ./package.json
+            ./config
+            ./README.md
+            ./LICENSE
+
+  publish-npm:
+    name: Publish
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node enviroment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: 'https://registry.npmjs.org'
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: BuildArtifact
+      - name: Publish to NPM
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
