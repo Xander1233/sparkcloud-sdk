@@ -33,7 +33,7 @@ class PubsubBuilder {
 		}
 	}
 
-	public onRun(handler: () => any): Runnable {
+	public onRun(handler: () => any): CRONFunction & Runnable {
 		return new CRONFunction(handler, { regions: this.regions, runWith: this.runtimeOptions }, { schedule: this.schedule });
 	}
 }

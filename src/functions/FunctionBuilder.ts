@@ -1,6 +1,6 @@
 import { VALID_MEMORY_OPTIONS, MAX_TIMEOUT_SECONDS, MIN_TIMEOUT_SECONDS, Regions, MIN_CPU_COUNTS, MAX_CPU_COUNTS, MIN_MINIMUM_INSTANCES, MAX_MINIMUM_INSTANCES } from './Constants';
 import { scheduleWithOptions } from './providers/pubsub';
-import { onCallWithOptions } from "./providers/https";
+import { HTTPSFunction, onCallWithOptions } from "./providers/https";
 
 export interface RuntimeOptions {
 	memory?: typeof VALID_MEMORY_OPTIONS[number];
@@ -73,13 +73,13 @@ function assertRegionOptions(regions: Regions): boolean {
 	return true;
 }
 
-export function region(...regions: Regions) {
+export function region(...regions: Regions): FunctionBuilder {
 	if (assertRegionOptions(regions)) {
 		return new FunctionBuilder({ regions });
 	}
 }
 
-export function runWith(runtimeOptions: RuntimeOptions) {
+export function runWith(runtimeOptions: RuntimeOptions): FunctionBuilder {
 	if (assertRunWithOptions(runtimeOptions)) {
 		return new FunctionBuilder({ runWith: runtimeOptions });
 	}
@@ -105,14 +105,14 @@ export class FunctionBuilder {
 		}
 	}
 
-	public region(...regions: Regions) {
+	public region(...regions: Regions): this {
 		if (assertRegionOptions(regions)) {
 			this._regions = regions;
 			return this;
 		}
 	}
 
-	public runWith(runtimeOptions: RuntimeOptions) {
+	public runWith(runtimeOptions: RuntimeOptions): this {
 		if (assertRunWithOptions(runtimeOptions)) {
 			this._runtimeOptions = runtimeOptions;
 			return this;
@@ -121,7 +121,7 @@ export class FunctionBuilder {
 
 	public get https() {
 		return {
-			onCall: (handler: (data: { body: any }, context: { auth?: { uid: string } }) => any) => {
+			onCall: (handler: (data: { body: any }, context: { auth?: { uid: string } }) => any): HTTPSFunction => {
 				return onCallWithOptions(handler, { regions: this.regions, runWith: this.runtimeOptions });
 			}
 		}
