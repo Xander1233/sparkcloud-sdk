@@ -109,6 +109,7 @@ export class FunctionBuilder {
 			this._regions = regions;
 			return this;
 		}
+		throw new Error("Invalid regions");
 	}
 
 	public runWith(runtimeOptions: RuntimeOptions) {
@@ -116,6 +117,7 @@ export class FunctionBuilder {
 			this._runtimeOptions = runtimeOptions;
 			return this;
 		}
+		throw new Error("Invalid runtime options");
 	}
 
 	public get https() {
