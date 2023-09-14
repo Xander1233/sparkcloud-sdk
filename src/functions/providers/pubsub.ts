@@ -2,15 +2,15 @@ import { Regions } from "../Constants";
 import { RuntimeOptions } from "../FunctionBuilder";
 import { Runnable } from "./base";
 
-export function schedule(cron: string): ScheduleBuilder {
-	return scheduleWithOptions(cron, { regions: [ "eu-central" ], runWith: { memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0 } });
+export function schedule(schedule: string): PubsubBuilder {
+	return scheduleWithOptions(schedule, { regions: [ "eu-central" ], runWith: { memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0 } });
 }
 
-export function scheduleWithOptions(cron: string, options: { regions: Regions, runWith: RuntimeOptions }): ScheduleBuilder {
-	return new ScheduleBuilder(cron, options);
+export function scheduleWithOptions(schedule: string, options: { regions: Regions, runWith: RuntimeOptions }): PubsubBuilder {
+	return new PubsubBuilder(schedule, options);
 }
 
-class ScheduleBuilder {
+class PubsubBuilder {
 	
 	public regions: Regions = [ "eu-central" ];
 	public runtimeOptions: RuntimeOptions = {
@@ -19,10 +19,10 @@ class ScheduleBuilder {
 		cpu: 1,
 		minimumInstances: 0
 	};
-	public cron: string;
+	public schedule: string;
 	
 	constructor(trigger: string, options: { regions: Regions, runWith: RuntimeOptions }) {
-		this.cron = trigger;
+		this.schedule = trigger;
 		
 		if (options.regions) {
 			this.regions = options.regions;
@@ -34,7 +34,7 @@ class ScheduleBuilder {
 	}
 
 	public onRun(handler: () => any): Runnable {
-		return new CRONFunction(handler, { regions: this.regions, runWith: this.runtimeOptions }, { cron: this.cron });
+		return new CRONFunction(handler, { regions: this.regions, runWith: this.runtimeOptions }, { schedule: this.schedule });
 	}
 }
 
@@ -42,9 +42,9 @@ export class CRONFunction extends Runnable {
 	public type: 'schedule' = 'schedule';
 	public handler: () => any;
 	public options: { regions: Regions, runWith: RuntimeOptions };
-	public trigger: { cron: string };
+	public trigger: { schedule: string };
 
-	constructor(handler: () => any, options: { regions: Regions, runWith: RuntimeOptions }, trigger: { cron: string }) {
+	constructor(handler: () => any, options: { regions: Regions, runWith: RuntimeOptions }, trigger: { schedule: string }) {
 		super();
 		this.handler = handler;
 		this.options = options;

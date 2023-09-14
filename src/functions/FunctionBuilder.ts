@@ -1,58 +1,61 @@
 import { VALID_MEMORY_OPTIONS, MAX_TIMEOUT_SECONDS, MIN_TIMEOUT_SECONDS, Regions, MIN_CPU_COUNTS, MAX_CPU_COUNTS, MIN_MINIMUM_INSTANCES, MAX_MINIMUM_INSTANCES } from './Constants';
-import { scheduleWithOptions } from './providers/cron';
-import { onCall, onCallWithOptions } from "./providers/https";
+import { scheduleWithOptions } from './providers/pubsub';
+import { onCallWithOptions } from "./providers/https";
 
 export interface RuntimeOptions {
 	memory?: typeof VALID_MEMORY_OPTIONS[number];
 	timeoutSeconds?: number;
 	cpu?: number;
 	minimumInstances?: number;
+	labels?: string[];
+	secrets?: string[];
 };
 
-interface FunctionBuilderOptions {
+export interface FunctionBuilderOptions {
 	runWith?: RuntimeOptions;
 	regions?: Regions;
 }
 
 function assertRunWithOptions(options: RuntimeOptions): boolean {
 	if (options && typeof options !== "object") {
-		console.log("options is not an object");
-		return false;
+		throw new Error("options is not an object");
 	}
 
 	if (options && options.memory && typeof options.memory !== "string") {
-		console.log("options.memory is not a string");
-		return false;
+		throw new Error("options.memory is not a string");
+	}
+	if (options && options.memory && !VALID_MEMORY_OPTIONS.includes(options.memory)) {
+		throw new Error("options.memory is not a valid memory option");
+	}
+	if (!options || (!options.memory && !options.timeoutSeconds)) {
+		throw new Error("options is empty");
 	}
 
 	if (options && options.timeoutSeconds && typeof options.timeoutSeconds !== "number") {
-		console.log("options.timeoutSeconds is not a number");
-		return false;
+		throw new Error("options.timeoutSeconds is not a number");
 	}
-
-	if (options && options.memory && !VALID_MEMORY_OPTIONS.includes(options.memory)) {
-		console.log("options.memory is not a valid memory option");
-		return false;
-	}
-
-	if (!options || (!options.memory && !options.timeoutSeconds)) {
-		console.log("options is empty");
-		return false;
-	}
-
 	if (options && options.timeoutSeconds && (options.timeoutSeconds < MIN_TIMEOUT_SECONDS || options.timeoutSeconds > MAX_TIMEOUT_SECONDS)) {
-		console.log("options.timeoutSeconds is not a valid timeout option");
-		return false;
+		throw new Error("options.timeoutSeconds is not a valid timeout option");
 	}
 
 	if (options && options.cpu && (options.cpu < MIN_CPU_COUNTS || options.cpu > MAX_CPU_COUNTS)) {
-		console.log("options.cpu is not a valid cpu option");
-		return false;
+		throw new Error("options.cpu is not a valid cpu option");
 	}
 
 	if (options && options.minimumInstances && (options.minimumInstances < MIN_MINIMUM_INSTANCES || options.minimumInstances > MAX_MINIMUM_INSTANCES)) {
-		console.log("options.minimumInstances is not a valid minimumInstances option");
-		return false;
+		throw new Error("options.minimumInstances is not a valid minimumInstances option");
+	}
+
+	const labelsRegex = /^[a-z_\-\/]{1,64}$/g;
+	const invalidLabels = options.labels.filter(label => !labelsRegex.test(label));
+	if (options && options.labels && invalidLabels.length > 0) {
+		throw new Error(`Invalid labels: ${invalidLabels.join(", ")}. Labels can only contain lowercase letters, underscores, dashes, and forward slashes.`);
+	}
+
+	const secretsRegex = /^[A-Za-z_\-\/]{1,64}$/g;
+	const invalidSecrets = options.secrets.filter(secret => !secretsRegex.test(secret));
+	if (options && options.secrets && invalidSecrets.length > 0) {
+		throw new Error(`Invalid secrets: ${invalidSecrets.join(", ")}. Secrets can only contain uppercase letters, lowercase letters, underscores, dashes, and forward slashes.`);
 	}
 
 	return true;
@@ -60,13 +63,11 @@ function assertRunWithOptions(options: RuntimeOptions): boolean {
 
 function assertRegionOptions(regions: Regions): boolean {
 	if (!Array.isArray(regions)) {
-		console.log("regions is not an array");
-		return false;
+		throw new Error("regions is not an array");
 	}
 
 	if (regions.length === 0) {
-		console.log("regions is empty");
-		return false;
+		throw new Error("regions is empty");
 	}
 
 	return true;
@@ -109,7 +110,6 @@ export class FunctionBuilder {
 			this._regions = regions;
 			return this;
 		}
-		throw new Error("Invalid regions");
 	}
 
 	public runWith(runtimeOptions: RuntimeOptions) {
@@ -117,7 +117,6 @@ export class FunctionBuilder {
 			this._runtimeOptions = runtimeOptions;
 			return this;
 		}
-		throw new Error("Invalid runtime options");
 	}
 
 	public get https() {
@@ -128,10 +127,10 @@ export class FunctionBuilder {
 		}
 	}
 
-	public get cron() {
+	public get pubsub() {
 		return {
-			schedule: (cron: string) => {
-				return scheduleWithOptions(cron, { regions: this.regions, runWith: this.runtimeOptions });
+			schedule: (schedule: string) => {
+				return scheduleWithOptions(schedule, { regions: this.regions, runWith: this.runtimeOptions });
 			}
 		}
 	}
