@@ -47,13 +47,13 @@ function assertRunWithOptions(options: RuntimeOptions): boolean {
 	}
 
 	const labelsRegex = /^[a-z_\-\/]{1,64}$/g;
-	const invalidLabels = options.labels.filter(label => !labelsRegex.test(label));
+	const invalidLabels = (options.labels ?? []).filter(label => !labelsRegex.test(label));
 	if (options && options.labels && invalidLabels.length > 0) {
 		throw new Error(`Invalid labels: ${invalidLabels.join(", ")}. Labels can only contain lowercase letters, underscores, dashes, and forward slashes.`);
 	}
 
 	const secretsRegex = /^[A-Za-z_\-\/]{1,64}$/g;
-	const invalidSecrets = options.secrets.filter(secret => !secretsRegex.test(secret));
+	const invalidSecrets = (options.secrets ?? []).filter(secret => !secretsRegex.test(secret));
 	if (options && options.secrets && invalidSecrets.length > 0) {
 		throw new Error(`Invalid secrets: ${invalidSecrets.join(", ")}. Secrets can only contain uppercase letters, lowercase letters, underscores, dashes, and forward slashes.`);
 	}
