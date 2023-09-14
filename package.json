@@ -1,6 +1,6 @@
 {
   "name": "sparkcloud-sdk",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "SparkCloud SDK to create and deploy your cloud functions.",
   "main": "dist/index.js",
   "scripts": {
@@ -16,8 +16,7 @@
   ],
   "author": "David Neidhart <david.neidhart@gmx.net>",
   "license": "MIT",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.8",
