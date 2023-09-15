@@ -9,7 +9,7 @@ describe("Https functions", () => {
 			});
 
 		expect(httpsFunction.options.regions).toEqual(["eu-central"]);
-		expect(httpsFunction.options.runWith).toEqual({ memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0 });
+		expect(httpsFunction.options.runWith).toEqual({ memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0, labels: [], secrets: [] });
 		expect(httpsFunction.type).toEqual("https");
 		expect(httpsFunction.handler).toBeDefined();
 		expect(httpsFunction.handler({body:"", context:{}})).toEqual("Hello world");
@@ -25,7 +25,7 @@ describe("Https functions", () => {
 			});
 
 		expect(httpsFunction.options.regions).toEqual(["us-central"])
-		expect(httpsFunction.options.runWith).toEqual({ memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0 });
+		expect(httpsFunction.options.runWith).toEqual({ memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0, labels: [], secrets: [] });
 		expect(httpsFunction.type).toEqual("https");
 		expect(httpsFunction.handler).toBeDefined();
 		expect(httpsFunction.handler({body:""}, {})).toEqual("Hello world from us-central");
@@ -41,7 +41,7 @@ describe("Https functions", () => {
 			});
 
 		expect(httpsFunction.options.regions).toEqual(["us-central", "eu-central"])
-		expect(httpsFunction.options.runWith).toEqual({ memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0 });
+		expect(httpsFunction.options.runWith).toEqual({ memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0, labels: [], secrets: [] });
 		expect(httpsFunction.type).toEqual("https");
 		expect(httpsFunction.handler).toBeDefined();
 		expect(httpsFunction.handler({body: ""}, {})).toEqual("Hello world from us-central and eu-central");
@@ -57,7 +57,7 @@ describe("Https functions", () => {
 			});
 
 		expect(httpsFunction.options.regions).toEqual(["eu-central"])
-		expect(httpsFunction.options.runWith).toEqual({ memory: "2g", timeoutSeconds: 20, cpu: 2, minimumInstances: 5 });
+		expect(httpsFunction.options.runWith).toEqual({ memory: "2g", timeoutSeconds: 20, cpu: 2, minimumInstances: 5, labels: [], secrets: [] });
 		expect(httpsFunction.type).toEqual("https");
 		expect(httpsFunction.handler).toBeDefined();
 		expect(httpsFunction.handler({ body:"" }, {})).toEqual("Hello world");
@@ -67,7 +67,7 @@ describe("Https functions", () => {
 	it("should not create a https function", () => {
 		const createFunction = () => {
 			const httpsFunction = functions
-			.runWith({ memory: '2g', timeoutSeconds: 9000, cpu: 20, minimumInstances: 5000 })
+			.runWith({ memory: '2g', timeoutSeconds: 9000, cpu: 20, minimumInstances: 5000, labels: [], secrets: [] })
 			.https
 			.onCall((data, context) => {
 				return "Hello world";

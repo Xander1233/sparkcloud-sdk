@@ -92,7 +92,9 @@ export class FunctionBuilder {
 		memory: "128m",
 		timeoutSeconds: 15,
 		cpu: 1,
-		minimumInstances: 0
+		minimumInstances: 0,
+		labels: [],
+		secrets: []
 	};
 
 	constructor(options: FunctionBuilderOptions) {

@@ -3,7 +3,7 @@ import { RuntimeOptions } from "../FunctionBuilder";
 import { Runnable } from "./base";
 
 export function schedule(schedule: string): PubsubBuilder {
-	return scheduleWithOptions(schedule, { regions: [ "eu-central" ], runWith: { memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0 } });
+	return scheduleWithOptions(schedule, { regions: [ "eu-central" ], runWith: { memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0, labels: [], secrets: [] } });
 }
 
 export function scheduleWithOptions(schedule: string, options: { regions: Regions, runWith: RuntimeOptions }): PubsubBuilder {
@@ -17,7 +17,9 @@ class PubsubBuilder {
 		memory: "128m",
 		timeoutSeconds: 15,
 		cpu: 1,
-		minimumInstances: 0
+		minimumInstances: 0,
+		labels: [],
+		secrets: []
 	};
 	public schedule: string;
 	
