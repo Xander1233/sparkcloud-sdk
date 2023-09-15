@@ -87,7 +87,7 @@ export function runWith(runtimeOptions: RuntimeOptions): FunctionBuilder {
 
 export class FunctionBuilder {
 
-	private _regions: Regions = [ "eu-central" ];
+	private _regions: Regions = [ 'europe-central1' ];
 	private _runtimeOptions: RuntimeOptions = {
 		memory: "128m",
 		timeoutSeconds: 15,
@@ -103,7 +103,7 @@ export class FunctionBuilder {
 		}
 
 		if (options.runWith) {
-			this._runtimeOptions = options.runWith;
+			this._runtimeOptions = { ...this._runtimeOptions, ...options.runWith };
 		}
 	}
 
