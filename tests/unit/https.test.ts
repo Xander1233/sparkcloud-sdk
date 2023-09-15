@@ -8,7 +8,7 @@ describe("Https functions", () => {
 				return "Hello world";
 			});
 
-		expect(httpsFunction.options.regions).toEqual(["eu-central"]);
+		expect(httpsFunction.options.regions).toEqual(["europe-central1"]);
 		expect(httpsFunction.options.runWith).toEqual({ memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0, labels: [], secrets: [] });
 		expect(httpsFunction.type).toEqual("https");
 		expect(httpsFunction.handler).toBeDefined();
@@ -18,13 +18,13 @@ describe("Https functions", () => {
 
 	it("should create a https function in us-central with default runtime options", () => {
 		const httpsFunction = functions
-			.region("us-central")
+			.region('us-east1')
 			.https
 			.onCall((data, context) => {
 				return "Hello world from us-central";
 			});
 
-		expect(httpsFunction.options.regions).toEqual(["us-central"])
+		expect(httpsFunction.options.regions).toEqual(['us-east1'])
 		expect(httpsFunction.options.runWith).toEqual({ memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0, labels: [], secrets: [] });
 		expect(httpsFunction.type).toEqual("https");
 		expect(httpsFunction.handler).toBeDefined();
@@ -34,13 +34,13 @@ describe("Https functions", () => {
 
 	it("should create a https function in us-central and eu-central with default runtime options", () => {
 		const httpsFunction = functions
-			.region("us-central", "eu-central")
+			.region('us-east1', 'europe-central1')
 			.https
 			.onCall((data, context) => {
 				return "Hello world from us-central and eu-central";
 			});
 
-		expect(httpsFunction.options.regions).toEqual(["us-central", "eu-central"])
+		expect(httpsFunction.options.regions).toEqual(['us-east1', 'europe-central1'])
 		expect(httpsFunction.options.runWith).toEqual({ memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0, labels: [], secrets: [] });
 		expect(httpsFunction.type).toEqual("https");
 		expect(httpsFunction.handler).toBeDefined();
@@ -50,13 +50,13 @@ describe("Https functions", () => {
 
 	it("should create a https function with 2gb of memory, a timeout threshold of 20 seconds, 2 cpu cores, and 5 minimum instances", () => {
 		const httpsFunction = functions
-			.runWith({ memory: '2g', timeoutSeconds: 20, cpu: 2, minimumInstances: 5 })
+			.runWith({ memory: '2g', timeoutSeconds: 20, cpu: 2, minimumInstances: 5, labels: [], secrets: [] })
 			.https
 			.onCall((data, context) => {
 				return "Hello world";
 			});
 
-		expect(httpsFunction.options.regions).toEqual(["eu-central"])
+		expect(httpsFunction.options.regions).toEqual(['europe-central1'])
 		expect(httpsFunction.options.runWith).toEqual({ memory: "2g", timeoutSeconds: 20, cpu: 2, minimumInstances: 5, labels: [], secrets: [] });
 		expect(httpsFunction.type).toEqual("https");
 		expect(httpsFunction.handler).toBeDefined();
