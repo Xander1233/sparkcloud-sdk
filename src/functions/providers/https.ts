@@ -3,7 +3,7 @@ import { RuntimeOptions } from "../FunctionBuilder";
 import { Runnable } from "./base";
 
 export function onCall(handler: (data: { body: any }, context: { auth?: { uid: string } }) => any): HTTPSFunction & Runnable {
-	return onCallWithOptions(handler, { regions: [ 'europe-central1' ], runWith: { memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0, labels: [], secrets: [] } });
+	return onCallWithOptions(handler, { regions: [ 'europe-west3' ], runWith: { memory: "128m", timeoutSeconds: 15, cpu: 1, minimumInstances: 0, labels: [], secrets: [] } });
 }
 
 export function onCallWithOptions(handler: (data: { body: any }, context: { auth?: { uid: string } }) => any, options: { regions: Regions, runWith: RuntimeOptions }): HTTPSFunction & Runnable {
