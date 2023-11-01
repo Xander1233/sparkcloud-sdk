@@ -6,3 +6,4 @@ typedoc.json
 docs/
 .gitattributes
 jest.config.js
+tsconfig.json
