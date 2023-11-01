@@ -27,9 +27,6 @@ function assertRunWithOptions(options: RuntimeOptions): boolean {
 	if (options && options.memory && !VALID_MEMORY_OPTIONS.includes(options.memory)) {
 		throw new Error("options.memory is not a valid memory option");
 	}
-	if (!options || (!options.memory && !options.timeoutSeconds)) {
-		throw new Error("options is empty");
-	}
 
 	if (options && options.timeoutSeconds && typeof options.timeoutSeconds !== "number") {
 		throw new Error("options.timeoutSeconds is not a number");
@@ -124,7 +121,7 @@ export class FunctionBuilder {
 	public get https() {
 		return {
 			onCall: (handler: (data: { body: any }, context: { auth?: { uid: string } }) => any): HTTPSFunction => {
-				return onCallWithOptions(handler, { regions: this.regions, runWith: this.runtimeOptions });
+				return onCallWithOptions(handler, { regions: this._regions, runWith: this._runtimeOptions });
 			}
 		}
 	}
@@ -132,16 +129,8 @@ export class FunctionBuilder {
 	public get pubsub() {
 		return {
 			schedule: (schedule: string) => {
-				return scheduleWithOptions(schedule, { regions: this.regions, runWith: this.runtimeOptions });
+				return scheduleWithOptions(schedule, { regions: this._regions, runWith: this._runtimeOptions });
 			}
 		}
-	}
-
-	public get regions() {
-		return this._regions;
-	}
-
-	public get runtimeOptions() {
-		return this._runtimeOptions;
 	}
 }
